@@ -1,53 +1,77 @@
-// The const steps = [...] array, and steps.map() function that renders the cards.
-// const is used to create a variable whose reference cannot be reassigned
-// Instead of writing four cards manually, React can use this array to generate them automatically, map() loops through every item in array and return new array
+import { motion } from "framer-motion";
+import { fadeInUp } from "../../animations/fadeIn";
 
-const steps=[
-    {
-        id:1,
-        title:"Create Profile",
-        description:"Add skills you can teach and skills you want to learn.",
-    },
-    {
-        id:2,
-        title:"Match",
-        description:"Find students who want your skills.",
-    },
-    {
-        id:3,
-        title:"Exchange",
-        description:"Teach and learn via chat or video calls.",
-    },
-    {
-        id:4,
-        title:"Grow",
-        description:"Earn ratings ans build credibility.",
-    },
+import { Card, CardContent } from "@/components/ui/card";
+
+import {
+  UserPlus,
+  Handshake,
+  MessageCircle,
+  Trophy,
+} from "lucide-react";
+
+const steps = [
+  {
+    icon: <UserPlus size={36} />,
+    title: "Create Profile",
+    description: "Show the skills you can teach and what you want to learn.",
+  },
+  {
+    icon: <Handshake size={36} />,
+    title: "Find a Match",
+    description: "Connect with learners who complement your skills.",
+  },
+  {
+    icon: <MessageCircle size={36} />,
+    title: "Exchange Skills",
+    description: "Learn together through chat or video sessions.",
+  },
+  {
+    icon: <Trophy size={36} />,
+    title: "Grow",
+    description: "Earn reviews, ratings and build credibility.",
+  },
 ];
 
-function HowItWorks(){
-    return(
-        <section className="mx-auto max-w-7xl px-6 py-24">
-            <h2 className="mb-16 text-center text-5xl font-bold text-white">
-                How It Works
-            </h2>
+function HowItWorks() {
+  return (
+    <motion.section
+      variants={fadeInUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      className="mx-auto max-w-7xl px-6 py-24"
+    >
+      <h2 className="mb-14 text-center text-5xl font-bold text-white">
+        How It Works
+      </h2>
 
-            <div className="grid gap--8 md:grid-cols-2 cl:grid-cols-4">
-                {steps.map((step)=>(
-                    <div
-                    key={step.id}
-                    className="rounded-2xl border border-white/10 bg-white/10 p-8 backdrop-blur-md transition duration-300 hover:-translate-y-2 hover:bg-white/15">
-                        <h3 className="mb-4 text-2xl font-semibold text-white">
-                            {step.title}
-                        </h3>
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+        {steps.map((step) => (
+          <Card
+            key={step.title}
+            className="group border-white/10 bg-white/5 backdrop-blur-md transition-all duration-300 hover:-translate-y-3 hover:border-blue-400/40 hover:bg-white/10"
+          >
+            <CardContent className="flex flex-col items-center p-8 text-center">
 
-                        <p claassName="leading-7 text-blue-100">
-                            {step.description}
-                        </p>
-                        </div>
-                ))}
-            </div>
-        </section>
-    );
+              <div className="mb-6 rounded-full bg-blue-500/20 p-4 text-blue-400 transition group-hover:scale-110">
+                {step.icon}
+              </div>
+
+              <h3 className="mb-3 text-2xl font-semibold text-white">
+                {step.title}
+              </h3>
+
+              <p className="leading-7 text-blue-100">
+                {step.description}
+              </p>
+
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </motion.section>
+  );
 }
+
 export default HowItWorks;

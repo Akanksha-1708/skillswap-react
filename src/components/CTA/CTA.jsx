@@ -1,23 +1,29 @@
+import { Button } from "@/components/ui/button";
+
 function CTA() {
   return (
-    <section className="mx-auto max-w-7xl px-6 py-28">
-      <div className="rounded-3xl border border-white/10 bg-gradient-to-r from-[#102A66] to-[#1C4AB5] p-16 text-center shadow-2xl">
+<section className="mx-auto max-w-7xl px-6 py-24">
 
-        <h2 className="text-5xl font-bold text-white">
-          Start Exchanging Skills Today
-        </h2>
+  <div className="rounded-3xl border border-blue-400/20 bg-gradient-to-r from-blue-600/30 to-blue-900/30 p-16 text-center backdrop-blur-xl">
 
-        <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-blue-100">
-          Join thousands of learners who are teaching what they know and
-          learning what they love—all without spending money.
-        </p>
+    <h2 className="text-5xl font-bold text-white">
+      Ready to Start Learning?
+    </h2>
 
-        <button className="mt-10 rounded-xl bg-white px-8 py-4 text-lg font-semibold text-blue-700 transition duration-300 hover:scale-105 hover:bg-blue-100">
-          Join SkillSwap
-        </button>
+    <p className="mx-auto mt-6 max-w-2xl text-lg text-blue-100">
+      Join thousands of learners exchanging knowledge every day.
+    </p>
 
-      </div>
-    </section>
+    <Button
+      className="mt-10 h-14 rounded-xl bg-blue-500 px-10 text-lg font-semibold hover:bg-blue-600"
+      size="lg"
+    >
+      Join SkillSwap
+    </Button>
+
+  </div>
+
+</section>
   );
 }
 
