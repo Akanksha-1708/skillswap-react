@@ -1,40 +1,116 @@
+import { Mail } from "lucide-react";
+import { FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa6";
+
 function Footer() {
   return (
-<footer className="border-t border-white/10 bg-[#08152F]">
+    <footer className="border-t border-white/10 bg-[#08152F]">
+      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-4">
 
-  <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 py-10 md:flex-row">
+        
+        <div>
+          <h2 className="text-3xl font-bold text-blue-400">
+            SkillSwap
+          </h2>
 
-    <div>
+          <p className="mt-5 leading-7 text-slate-300">
+            Learn. Teach. Grow.
+            <br />
+            Exchange skills with passionate learners
+            across the globe.
+          </p>
+        </div>
 
-      <h2 className="text-2xl font-bold text-blue-400">
-        SkillSwap
-      </h2>
+        
+        <div>
+          <h3 className="mb-5 text-xl font-semibold text-white">
+            Quick Links
+          </h3>
 
-      <p className="mt-2 text-blue-200">
-        Learn • Teach • Grow
-      </p>
+          <ul className="space-y-3 text-slate-300">
+            <li className="cursor-pointer transition hover:text-blue-400">
+              Home
+            </li>
 
-    </div>
+            <li className="cursor-pointer transition hover:text-blue-400">
+              Skills
+            </li>
 
-    <div className="flex gap-8 text-blue-200">
+            <li className="cursor-pointer transition hover:text-blue-400">
+              About
+            </li>
 
-      <p className="cursor-pointer hover:text-white">
-        About
-      </p>
+            <li className="cursor-pointer transition hover:text-blue-400">
+              Contact
+            </li>
+          </ul>
+        </div>
 
-      <p className="cursor-pointer hover:text-white">
-        Contact
-      </p>
+        
+        <div>
+          <h3 className="mb-5 text-xl font-semibold text-white">
+            Resources
+          </h3>
 
-      <p className="cursor-pointer hover:text-white">
-        Privacy
-      </p>
+          <ul className="space-y-3 text-slate-300">
+            <li className="cursor-pointer transition hover:text-blue-400">
+              FAQ
+            </li>
 
-    </div>
+            <li className="cursor-pointer transition hover:text-blue-400">
+              Privacy Policy
+            </li>
 
-  </div>
+            <li className="cursor-pointer transition hover:text-blue-400">
+              Terms & Conditions
+            </li>
 
-</footer>
+            <li className="cursor-pointer transition hover:text-blue-400">
+              Support
+            </li>
+          </ul>
+        </div>
+
+        
+        <div>
+          <h3 className="mb-5 text-xl font-semibold text-white">
+            Connect
+          </h3>
+
+          <div className="flex gap-4">
+
+            <a
+              href="#"
+              className="rounded-full bg-white/10 p-3 transition hover:bg-blue-500">
+              <FaGithub size={22} className="text-white" />
+            </a>
+
+            <a
+              href="#"
+              className="rounded-full bg-white/10 p-3 transition hover:bg-blue-500">
+              <FaLinkedin size={22} className="text-white" />
+            </a>
+
+            <a
+              href="#"
+              className="rounded-full bg-white/10 p-3 transition hover:bg-blue-500">
+              <FaXTwitter size={22} className="text-white" />
+            </a>
+
+            <a
+              href="mailto:example@gmail.com"
+              className="rounded-full bg-white/10 p-3 transition hover:bg-blue-500">
+              <Mail size={22} className="text-white" />
+            </a>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div className="border-t border-white/10 py-6 text-center text-slate-400">
+        © 2026 SkillSwap. All rights reserved.
+      </div>
+    </footer>
   );
 }
 

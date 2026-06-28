@@ -4,6 +4,11 @@ import HowItWorks from "../../components/HowItWorks/HowItWorks";
 import PopularSkills from "../../components/PopularSkills/PopularSkills";
 import CTA from "../../components/CTA/CTA";
 import Footer from "../../components/Footer/Footer";
+import WhySkillSwap from "../../components/WhySkillSwap/WhySkillSwap";
+import Testimonials from "../../components/Testiminials/Testimonials";
+import FAQ from "../../components/FAQ/FAQ";
+import Newsletter from "@/components/Newsletter/Newsletter";
+
 
 function Home(){
     return(
@@ -12,7 +17,11 @@ function Home(){
             <Hero/>
             <HowItWorks/>
             <PopularSkills/>
+            <WhySkillSwap/>
+            <Testimonials/>
+            <FAQ/>
             <CTA/>
+            <Newsletter/>
             <Footer/>
         </div>
     );
