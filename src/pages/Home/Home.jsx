@@ -1,3 +1,6 @@
+// React never reloads the page. Only the component changes. This is called a Single Page Application (SPA).
+
+
 import Navbar from "../../components/Navbar/Navbar";
 import Hero from "../../components/Hero/Hero";
 import HowItWorks from "../../components/HowItWorks/HowItWorks";
@@ -13,7 +16,6 @@ import Newsletter from "@/components/Newsletter/Newsletter";
 function Home(){
     return(
         <div className="min-h-screen bg-gradient-to-br from-[#081E4C] via-[#233E88] to-[#475793]">
-            <Navbar/>
             <Hero/>
             <HowItWorks/>
             <PopularSkills/>
@@ -22,7 +24,6 @@ function Home(){
             <FAQ/>
             <CTA/>
             <Newsletter/>
-            <Footer/>
         </div>
     );
 }

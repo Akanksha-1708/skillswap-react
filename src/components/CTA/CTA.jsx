@@ -2,9 +2,10 @@ import { Button } from "@/components/ui/button";
 
 function CTA() {
   return (
-<section className="mx-auto max-w-7xl px-6 py-24">
+ <section className="bg-[#0E214F] py-24">
+  <div className="mx-auto max-w-7xl px-6">
 
-  <div className="rounded-3xl border border-blue-400/20 bg-gradient-to-r from-blue-600/30 to-blue-900/30 p-16 text-center backdrop-blur-xl">
+  <div className="rounded-3xl border border-blue-400/20 bg-white/5 backdrop-blur-xl p-16 text-center">
 
     <h2 className="text-5xl font-bold text-white">
       Ready to Start Learning?
@@ -21,6 +22,7 @@ function CTA() {
       Join SkillSwap
     </Button>
 
+  </div>
   </div>
 
 </section>
