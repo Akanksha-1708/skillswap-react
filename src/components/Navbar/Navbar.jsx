@@ -5,20 +5,32 @@
 // The key helps React identify each item efficiently
 // button aschild=> The Button component doesn't render a <button> anymore. Instead, it styles the NavLink to look like a button.
 
+
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 
 function Navbar() {
+  const { currentUser, logout } = useAuth();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setIsMenuOpen(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "How It Works", path: "/#how-it-works" },
     { name: "Skills", path: "/#skills" },
-    { name: "Login", path: "/login" },
   ];
 
   return (
@@ -36,6 +48,7 @@ function Navbar() {
 
         {/* Desktop Navigation */}
         <ul className="hidden items-center gap-8 text-lg font-medium md:flex">
+
           {navLinks.map((link) => (
             <li key={link.name}>
               <NavLink
@@ -52,14 +65,46 @@ function Navbar() {
             </li>
           ))}
 
-          <Button
-            asChild
-            className="h-12 rounded-xl bg-blue-500 px-7 text-base font-semibold hover:bg-blue-600"
-          >
-            <NavLink to="/signup">
-              Sign Up
-            </NavLink>
-          </Button>
+          {currentUser ? (
+            <>
+              <li>
+                <NavLink
+                  to="/dashboard"
+                  className="text-white transition duration-300 hover:text-blue-400"
+                >
+                  Dashboard
+                </NavLink>
+              </li>
+
+              <Button
+                onClick={handleLogout}
+                className="h-12 rounded-xl bg-red-500 px-7 text-base font-semibold hover:bg-red-600"
+              >
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <li>
+                <NavLink
+                  to="/login"
+                  className="text-white transition duration-300 hover:text-blue-400"
+                >
+                  Login
+                </NavLink>
+              </li>
+
+              <Button
+                asChild
+                className="h-12 rounded-xl bg-blue-500 px-7 text-base font-semibold hover:bg-blue-600"
+              >
+                <NavLink to="/signup">
+                  Sign Up
+                </NavLink>
+              </Button>
+            </>
+          )}
+
         </ul>
 
         {/* Mobile Menu Button */}
@@ -70,11 +115,13 @@ function Navbar() {
         >
           {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
+
       </div>
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
         <div className="space-y-5 border-t border-white/10 bg-[#081E4C] px-6 py-6 md:hidden">
+
           {navLinks.map((link) => (
             <NavLink
               key={link.name}
@@ -91,17 +138,47 @@ function Navbar() {
             </NavLink>
           ))}
 
-          <Button
-            asChild
-            className="h-12 w-full rounded-xl bg-blue-500 text-base font-semibold hover:bg-blue-600"
-          >
-            <NavLink
-              to="/signup"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Sign Up
-            </NavLink>
-          </Button>
+          {currentUser ? (
+            <>
+              <NavLink
+                to="/dashboard"
+                onClick={() => setIsMenuOpen(false)}
+                className="block text-white hover:text-blue-400"
+              >
+                Dashboard
+              </NavLink>
+
+              <Button
+                onClick={handleLogout}
+                className="h-12 w-full rounded-xl bg-red-500 text-base font-semibold hover:bg-red-600"
+              >
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <NavLink
+                to="/login"
+                onClick={() => setIsMenuOpen(false)}
+                className="block text-white hover:text-blue-400"
+              >
+                Login
+              </NavLink>
+
+              <Button
+                asChild
+                className="h-12 w-full rounded-xl bg-blue-500 text-base font-semibold hover:bg-blue-600"
+              >
+                <NavLink
+                  to="/signup"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Sign Up
+                </NavLink>
+              </Button>
+            </>
+          )}
+
         </div>
       )}
     </nav>

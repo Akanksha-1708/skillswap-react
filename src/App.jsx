@@ -4,25 +4,15 @@
 // <> </> is react fragment, acts as an invisible box
 //<Navbar/> is a way of calling Navbar component
 
-// import Navbar from "./components/Navbar/Navbar";
-
-// function App() {
-//   return (
-//     <>
-//       <Navbar/>
-//     </>
-//   );
-// }
-
-// export default App;
 
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
-
+import ProtectedRoute from "./routes/ProtectedRoute";
 import MainLayout from "./layouts/MainLayout";
+import Dashboard from "./pages/Dashboard/Dashboard";
 
 function App() {
   return (
@@ -36,6 +26,12 @@ function App() {
           <Route path="/login" element={<Login />} />
 
           <Route path="/signup" element={<Signup />} />
+
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboard />
+              </ProtectedRoute>
+            }/>
 
         </Route>
 
