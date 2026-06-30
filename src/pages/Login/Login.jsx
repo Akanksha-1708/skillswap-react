@@ -6,9 +6,40 @@ import { Eye, EyeOff } from "lucide-react";
 import { Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { motion } from "framer-motion";
+import {auth } from "@/firebase/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+
 
 function Login() {
 const [showPassword, setShowPassword] = useState(false);
+const [formData, setFormData]=useState({
+  email:"",
+  password:"",
+});
+const navigate=useNavigate();
+
+const handleChange = (e) => {
+  setFormData({
+    ...formData,
+    [e.target.name]: e.target.value,
+  });
+};
+
+const handleLogin=async()=>{
+  try{
+    await signInWithEmailAndPassword(
+      auth,
+      formData.email,
+      formData.password
+    );
+    alert("Login Successful !");
+    navigate("/");
+  }catch(error){
+    alert(error.message);
+  }
+};
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#081E4C] via-[#233E88] to-[#475793] px-6">
 
@@ -56,6 +87,9 @@ const [showPassword, setShowPassword] = useState(false);
 
             <input
               type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               placeholder="Enter your email"
               className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-4 text-white outline-none placeholder:text-slate-400 focus:border-blue-500"
             />
@@ -71,6 +105,9 @@ const [showPassword, setShowPassword] = useState(false);
             <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               placeholder="Enter your password"
               className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-4 text-white outline-none placeholder:text-slate-400 focus:border-blue-500"/>
 
@@ -100,7 +137,7 @@ const [showPassword, setShowPassword] = useState(false);
 
           </div>
 
-          <Button className="mt-8 h-12 w-full rounded-xl bg-blue-500 text-lg hover:bg-blue-600">
+          <Button onClick={handleLogin} className="mt-8 h-12 w-full rounded-xl bg-blue-500 text-lg hover:bg-blue-600">
             Login
           </Button>
 
