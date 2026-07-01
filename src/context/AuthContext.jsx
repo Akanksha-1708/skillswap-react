@@ -13,6 +13,9 @@
 import {createContext,useContext,useEffect,useState} from "react";
 import {auth} from "@/firebase/firebase";
 import { onAuthStateChanged,signOut } from "firebase/auth";
+import {doc,getDoc} from "firebase/firestore";
+import {db} from "@/firebase/firebase";
+
 
 const AuthContext=createContext();
 
@@ -21,10 +24,22 @@ export function useAuth(){
 }
 export function AuthProvider({children}){
     const [currentUser, setCurrentUser] = useState(null);
+    const [userProfile, setUserProfile] = useState(null);
     const [loading, setLoading] = useState(true);  //still checking with Firebase
     useEffect(()=>{
-        const unsubscribe=onAuthStateChanged(auth,(user)=>{
+        const unsubscribe=onAuthStateChanged(auth,async (user)=>{
             setCurrentUser(user);
+            if(user){
+                const docref=doc(db,"users",user.uid);
+                const docSnap=await getDoc(docref);
+                if(docSnap.exists()){
+                    setUserProfile(docSnap.data());
+                }else{
+                    setUserProfile(null);
+                }
+            }else{
+                setUserProfile(null);
+            }
             setLoading(false);
         });
         return unsubscribe;
@@ -38,7 +53,7 @@ export function AuthProvider({children}){
     }
 
     return(
-        <AuthContext.Provider value={{currentUser,logout}}>
+        <AuthContext.Provider value={{currentUser,userProfile,logout}}>
             {children}
         </AuthContext.Provider>
     );

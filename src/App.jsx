@@ -13,6 +13,7 @@ import Signup from "./pages/Signup/Signup";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import MainLayout from "./layouts/MainLayout";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import ProfileSetup from "./pages/ProfileSetup/ProfileSetup";
 
 function App() {
   return (
@@ -32,6 +33,12 @@ function App() {
               <Dashboard />
               </ProtectedRoute>
             }/>
+
+          <Route path="/profile-setup" element={
+            <ProtectedRoute>
+              <ProfileSetup />
+            </ProtectedRoute>
+          } />
 
         </Route>
 

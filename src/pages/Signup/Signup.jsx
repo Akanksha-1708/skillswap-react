@@ -8,6 +8,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
 const [showPassword, setShowPassword] = useState(false);
@@ -24,9 +25,10 @@ const handleChange = (e) => {
     [e.target.name]: e.target.value,
   });
 };
-
+const navigate = useNavigate();
 const handleSignup = async () => {
   try {
+    console.log(formData);
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       formData.email,
@@ -37,9 +39,9 @@ const handleSignup = async () => {
 
     alert("Account Created Successfully!");
 
-  } catch (error) {
-    console.error(error);
+    navigate("/profile-setup");
 
+  } catch (error) {
     alert(error.message);
   }
 };

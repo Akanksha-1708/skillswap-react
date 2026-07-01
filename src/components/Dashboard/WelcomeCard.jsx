@@ -3,7 +3,9 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 
 function WelcomeCard() {
-  const { currentUser } = useAuth();
+  const { currentUser,userProfile } = useAuth();
+  console.log("Current User:", currentUser);
+  console.log("User Profile:", userProfile);
 
   return (
     <motion.div
@@ -16,7 +18,7 @@ function WelcomeCard() {
         Welcome,
         <span className="text-blue-400">
           {" "}
-          {currentUser?.displayName || "Learner"} 👋
+          {userProfile?.fullName||currentUser?.displayName || "Learner"} 👋
         </span>
       </h1>
 
@@ -25,8 +27,8 @@ function WelcomeCard() {
       </p>
 
       <p className="mt-6 max-w-2xl text-slate-400">
-        Continue your learning journey, connect with new mentors,
-        and exchange skills with the SkillSwap community.
+        {userProfile?.bio||
+        "Continue your learning journey, connect with new mentors,and exchange skills with the SkillSwap community."}
       </p>
     </motion.div>
   );
