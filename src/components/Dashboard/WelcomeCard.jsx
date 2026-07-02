@@ -1,6 +1,7 @@
 // Using Context to access the logged-in user anywhere in your app.
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
+import { Link } from "react-router-dom";
 
 function WelcomeCard() {
   const { currentUser,userProfile } = useAuth();
@@ -30,6 +31,12 @@ function WelcomeCard() {
         {userProfile?.bio||
         "Continue your learning journey, connect with new mentors,and exchange skills with the SkillSwap community."}
       </p>
+
+      <div className="mt-8">
+      <Link to="/edit-profile" className="inline-flex h-11 items-center rounded-xl bg-blue-500 px-6 font-semibold text-white transition hover:bg-blue-600">
+      Edit Profile
+     </Link>
+     </div>
     </motion.div>
   );
 }

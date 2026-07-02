@@ -10,6 +10,32 @@
 // app starts->user logs out->firebase says no user now
 // return unsubscribe => Removes the Firebase auth listener when the component unmounts, preventing memory leaks.
 
+
+// AuthContext acts as the single source of truth for authentication and user profile.
+//
+// Why do we need refreshUserProfile()?
+//
+// When the app starts, AuthContext reads the user's profile from Firestore only once
+// and stores it in Context. After the user edits their profile, Firestore is updated,
+// but Context still contains the old data because it doesn't automatically know that
+// the database has changed.
+//
+// refreshUserProfile() manually fetches the latest profile from Firestore and updates
+// the Context. Since every component (Dashboard, Navbar, WelcomeCard, etc.) reads the
+// profile from Context, they automatically re-render with the latest data without
+// requiring a page refresh.
+//
+// Flow:
+// App Starts
+//      ↓
+// Firestore → AuthContext → Entire App
+//
+// Profile Updated
+//      ↓
+// refreshUserProfile()
+//      ↓
+// Firestore → AuthContext → Entire App (Updated)
+
 import {createContext,useContext,useEffect,useState} from "react";
 import {auth} from "@/firebase/firebase";
 import { onAuthStateChanged,signOut } from "firebase/auth";
@@ -26,34 +52,41 @@ export function AuthProvider({children}){
     const [currentUser, setCurrentUser] = useState(null);
     const [userProfile, setUserProfile] = useState(null);
     const [loading, setLoading] = useState(true);  //still checking with Firebase
+    const refreshUserProfile = async (user) => {
+    if (!user) {
+    setUserProfile(null);
+    return;
+    }
+
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+    setUserProfile(docSnap.data());
+    } else {
+    setUserProfile(null);
+    }
+    };
+    
     useEffect(()=>{
         const unsubscribe=onAuthStateChanged(auth,async (user)=>{
             setCurrentUser(user);
-            if(user){
-                const docref=doc(db,"users",user.uid);
-                const docSnap=await getDoc(docref);
-                if(docSnap.exists()){
-                    setUserProfile(docSnap.data());
-                }else{
-                    setUserProfile(null);
-                }
-            }else{
-                setUserProfile(null);
-            }
+            await refreshUserProfile(user);
             setLoading(false);
         });
         return unsubscribe;
     },[]);
 
-    const logout=()=>{
-        return signOut(auth);
+    const logout=async()=>{
+        setUserProfile(null);
+        await signOut(auth);
     }
     if (loading) {
     return null;
     }
 
     return(
-        <AuthContext.Provider value={{currentUser,userProfile,logout}}>
+        <AuthContext.Provider value={{currentUser,userProfile,logout,refreshUserProfile,}}>
             {children}
         </AuthContext.Provider>
     );

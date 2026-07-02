@@ -28,9 +28,11 @@ const handleChange = (e) => {
 
 const handleLogin=async()=>{
   try{
+    console.log("Email:", `"${formData.email}"`);
+    console.log("Password:", `"${formData.password}"`);
     await signInWithEmailAndPassword(
       auth,
-      formData.email,
+      formData.email.trim(),
       formData.password
     );
     alert("Login Successful !");

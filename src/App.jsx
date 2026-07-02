@@ -5,7 +5,7 @@
 //<Navbar/> is a way of calling Navbar component
 
 
-
+import EditProfile from "./pages/EditProfile/EditProfile";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
@@ -37,6 +37,12 @@ function App() {
           <Route path="/profile-setup" element={
             <ProtectedRoute>
               <ProfileSetup />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/edit-profile" element={
+            <ProtectedRoute>
+              <EditProfile />
             </ProtectedRoute>
           } />
 
