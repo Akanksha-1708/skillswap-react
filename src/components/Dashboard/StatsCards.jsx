@@ -4,31 +4,32 @@ import {
   Users,
   Award,
 } from "lucide-react";
+import {useAuth} from "@/context/AuthContext";
 
-const stats = [
+function StatsCards() {
+  const {userProfile}=useAuth();
+  const stats = [
   {
     title: "Skills Learning",
-    value: 4,
+    value: userProfile?.learningSkills?.length || 0,
     icon: BookOpen,
   },
   {
     title: "Skills Teaching",
-    value: 2,
+    value: userProfile?.teachingSkills?.length || 0,
     icon: GraduationCap,
   },
   {
     title: "Skill Swaps",
-    value: 8,
+    value: 0,
     icon: Users,
   },
   {
     title: "Achievements",
-    value: 5,
+    value: 0,
     icon: Award,
   },
 ];
-
-function StatsCards() {
   return (
     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
 

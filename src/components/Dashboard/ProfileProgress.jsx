@@ -1,12 +1,25 @@
 // Instead of building a progress bar from scratch with <div>s and CSS, we're reusing a tested UI component.
 // This lets you focus on the application logic. Later, when the user uploads a profile picture, adds skills, or writes a bio, we'll calculate the percentage dynamically and simply change the value prop
 
+// React computes the value from existing data instead of storing another piece of state( for calc profile progress val)
+// with the use of useAth()->Instead of fetching from Firestore again, you reused the data already stored in AuthContext
+// for other cards, instead of calculating things again, we will reuse the same logic, which is react principle called DRY(Don't Repeat Yourself). This is a good practice to avoid code duplication and make the code more maintainable
 
 import { Progress } from "@/components/ui/progress";
+import {useAuth} from "@/context/AuthContext";
 
 function ProfileProgress() {
-  const progress = 40;
-
+  const {userProfile}=useAuth();
+  const fields=[
+    userProfile?.fullName,
+    userProfile?.bio,
+    userProfile?.teachingSkills?.length,
+    userProfile?.learningSkills?.length,
+    userProfile?.experience,
+    userProfile?.availability,
+  ]
+  const completedFields=fields.filter(Boolean).length;
+  const progress=Math.round((completedFields/fields.length)*100);
   return (
     <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
       <div className="flex items-center justify-between">
