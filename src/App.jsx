@@ -14,6 +14,8 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import MainLayout from "./layouts/MainLayout";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import ProfileSetup from "./pages/ProfileSetup/ProfileSetup";
+import BrowseSkills from "./pages/BrowseSkills/BrowseSkills";
+import PublicProfile from "./pages/PublicProfile/PublicProfile";
 
 function App() {
   return (
@@ -46,6 +48,17 @@ function App() {
             </ProtectedRoute>
           } />
 
+          <Route path="/skills" element={
+            <ProtectedRoute>
+              <BrowseSkills/>
+            </ProtectedRoute>
+          } />
+
+          <Route path="/profile/:userId" element={
+            <ProtectedRoute>
+              <PublicProfile/>
+            </ProtectedRoute>
+          }/>
         </Route>
 
       </Routes>

@@ -30,7 +30,7 @@ function Navbar() {
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "How It Works", path: "/#how-it-works" },
-    { name: "Skills", path: "/#skills" },
+    { name: "Skills", path: "/skills" },
   ];
 
   return (
