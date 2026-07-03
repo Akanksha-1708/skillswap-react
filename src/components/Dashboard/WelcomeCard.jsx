@@ -32,11 +32,33 @@ function WelcomeCard() {
         "Continue your learning journey, connect with new mentors,and exchange skills with the SkillSwap community."}
       </p>
 
-      <div className="mt-8">
-      <Link to="/edit-profile" className="inline-flex h-11 items-center rounded-xl bg-blue-500 px-6 font-semibold text-white transition hover:bg-blue-600">
+      <div className="mt-8 flex flex-wrap gap-4">
+
+      <Link
+      to="/edit-profile"
+      className="inline-flex h-11 items-center rounded-xl bg-blue-500 px-6 font-semibold text-white transition hover:bg-blue-600">
       Edit Profile
-     </Link>
-     </div>
+      </Link>
+
+      <Link
+      to="/skills"
+      className="inline-flex h-11 items-center rounded-xl bg-blue-500 px-6 font-semibold text-white transition hover:bg-blue-600">
+      Browse Skills
+      </Link>
+
+      <Link
+      to="/requests"
+      className="inline-flex h-11 items-center rounded-xl bg-blue-500 px-6 font-semibold text-white transition hover:bg-blue-600">
+      Incoming Requests
+      </Link>
+
+      <Link
+      to="/sent-requests"
+      className="inline-flex h-11 items-center rounded-xl bg-blue-500 px-6 font-semibold text-white transition hover:bg-blue-600">
+      Sent Requests
+      </Link>
+
+    </div>
     </motion.div>
   );
 }

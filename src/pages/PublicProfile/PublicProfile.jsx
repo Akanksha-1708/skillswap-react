@@ -22,14 +22,15 @@
 // Unlike BrowseSkills, which fetches every user using getDocs(),
 // this page fetches only one specific user using getDoc().
 // useparams() extracts the userId from the URL, which is then used to fetch the user's data from Firestore.
-
+import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { useParams } from "react-router-dom";
-
+import RequestButton from "@/components/SwapRequest/RequestButton";
 function PublicProfile() {
 
+    const { currentUser } = useAuth();
     const { userId } = useParams();
     const [user, setUser] = useState(null);
     useEffect(() => {
@@ -117,9 +118,11 @@ return (
         </div>
 
       </div>
-
-    </div>
-
+      
+        {currentUser?.uid!==userId&&(
+        <RequestButton toUserId={userId}/>
+        )}
+        </div>
   </div>
 );
 }

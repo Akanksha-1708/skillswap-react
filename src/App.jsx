@@ -16,7 +16,8 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import ProfileSetup from "./pages/ProfileSetup/ProfileSetup";
 import BrowseSkills from "./pages/BrowseSkills/BrowseSkills";
 import PublicProfile from "./pages/PublicProfile/PublicProfile";
-
+import Requests from "@/pages/Requests/Requests";
+import SentRequests from "@/pages/SentRequests/SentRequests";
 function App() {
   return (
     <BrowserRouter>
@@ -57,6 +58,19 @@ function App() {
           <Route path="/profile/:userId" element={
             <ProtectedRoute>
               <PublicProfile/>
+            </ProtectedRoute>
+          }/>
+
+          <Route path="/requests" element={
+            <ProtectedRoute>
+              <Requests/>
+            </ProtectedRoute>
+            }/>
+
+          <Route path="/sent-requests"
+          element={
+            <ProtectedRoute>
+              <SentRequests/>
             </ProtectedRoute>
           }/>
         </Route>
