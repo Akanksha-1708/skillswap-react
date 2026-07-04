@@ -3,22 +3,36 @@
 // review->react state->addDoc()->firestore->review saved
 // function ReviewForm({toUserId})=> reviewform needs to know who is being reviewed
 // The review is added using addDoc(), allowing Firestore to automatically generate a unique document ID.
+// Before adding a new review, we check whether the logged-in user has already reviewed the same person.
+// This prevents duplicate reviews by querying Firestore for an existing review with the same user
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {useAuth} from "@/context/AuthContext";
 import {db} from "@/firebase/firebase";
-import {addDoc,collection,serverTimestamp,} from "firebase/firestore";
+import {addDoc,collection,serverTimestamp,query,where,getDocs,} from "firebase/firestore";
 
 function ReviewForm({toUserId}) {
   const [rating, setRating] = useState("");
   const [comment, setComment] = useState("");
   const {currentUser}=useAuth();
+
   const handleSubmit=async()=>{
     if(!rating||!comment){
         alert("Please complete the review.");
         return;
     }
     try{
+        const reviewQuery=query(
+            collection(db,"reviews"),
+            where("fromUser","==",currentUser.uid),
+            where("toUser","==",toUserId)
+        );
+        const existingReview=await getDocs(reviewQuery);
+        if(!existingReview.empty){
+            alert("You have already reviewed this user.");
+            return;
+        }
         await addDoc(
             collection(db,"reviews"),
             {

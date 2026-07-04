@@ -1,5 +1,4 @@
 // PublicProfile displays the complete information of a selected user.
-//
 // The page uses a dynamic route (/profile/:userId), where userId is the
 // Firestore document ID.
 //
@@ -22,6 +21,7 @@
 // Unlike BrowseSkills, which fetches every user using getDocs(),
 // this page fetches only one specific user using getDoc().
 // useparams() extracts the userId from the URL, which is then used to fetch the user's data from Firestore.
+// a user can leave a review only after an accepted skill swap
 import { useAuth } from "@/context/AuthContext";
 import ReviewCard from "@/components/Reviews/ReviewCard";
 import { useEffect, useState } from "react";
@@ -36,6 +36,11 @@ function PublicProfile() {
     const { userId } = useParams();
     const [user, setUser] = useState(null);
     const [reviews, setReviews] = useState([]);
+    const [canReview, setCanReview] = useState(false);
+
+    const averageRating=reviews.length>0?
+    (reviews.reduce((sum,review)=>sum+review.rating,0)/reviews.length).toFixed(1)
+    :"No Ratings";
     useEffect(() => {
         const fetchUser=async()=>{
             const docRef=doc(db,"users",userId);
@@ -47,6 +52,17 @@ function PublicProfile() {
           collection(db,"reviews"),
           where("toUser","==",userId)
         );
+
+        const requestQuery = query(
+        collection(db, "swapRequests"),
+        where("fromUser", "==", currentUser.uid),
+        where("toUser", "==", userId),
+        where("status", "==", "accepted")
+        );
+
+        const requestSnapshot = await getDocs(requestQuery);
+        setCanReview(!requestSnapshot.empty);
+
         const reviewSnapshot=await getDocs(reviewQuery);
         const reviewList=reviewSnapshot.docs.map(doc=>({
           id:doc.id,
@@ -75,6 +91,14 @@ return (
       <h1 className="text-5xl font-bold text-white">
         {user.fullName}
       </h1>
+
+      <div className="mt-3 flex items-center gap-2">
+        <span className="text-xl text-yellow-400">⭐</span>
+        <span className="text-lg font-semibold text-white">{averageRating}</span>
+        <span className="text-slate-300">
+          ({reviews.length} Reviews)
+        </span>
+      </div>
 
       <p className="mt-4 text-lg text-slate-300">
         {user.bio}
@@ -138,7 +162,7 @@ return (
         </div>
 
         <div className="mx-auto mt-10 max-w-4xl">
-          {currentUser?.uid!==userId&&(<ReviewForm toUserId={userId}/>)}
+          {currentUser?.uid!==userId&&canReview&&(<ReviewForm toUserId={userId}/>)}
 
         <div className="mt-10 space-y-6">
           <h2 className="text-3xl font-bold text-white">

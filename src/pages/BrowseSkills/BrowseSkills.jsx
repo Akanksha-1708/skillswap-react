@@ -51,8 +51,10 @@ import UserCard from "@/components/BrowseSkills/UserCard";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
+import { useAuth } from "@/context/AuthContext";
 
 function BrowseSkills(){
+    const { currentUser } = useAuth();
     const [users, setUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const fetchUsers=async()=>{
@@ -71,6 +73,9 @@ function BrowseSkills(){
     },[]);
 
     const filteredUsers = users.filter((user) => {
+        if(user.uid===currentUser?.uid){
+            return false;
+        }
     const search = searchTerm.toLowerCase();
 
     const nameMatch = user.fullName
