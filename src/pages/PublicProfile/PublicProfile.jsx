@@ -23,16 +23,19 @@
 // this page fetches only one specific user using getDoc().
 // useparams() extracts the userId from the URL, which is then used to fetch the user's data from Firestore.
 import { useAuth } from "@/context/AuthContext";
+import ReviewCard from "@/components/Reviews/ReviewCard";
 import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { useParams } from "react-router-dom";
 import RequestButton from "@/components/SwapRequest/RequestButton";
+import ReviewForm from "@/components/Reviews/ReviewForm";
+import {doc,getDoc,collection,getDocs,query,where} from "firebase/firestore";
 function PublicProfile() {
 
     const { currentUser } = useAuth();
     const { userId } = useParams();
     const [user, setUser] = useState(null);
+    const [reviews, setReviews] = useState([]);
     useEffect(() => {
         const fetchUser=async()=>{
             const docRef=doc(db,"users",userId);
@@ -40,6 +43,16 @@ function PublicProfile() {
             if(docSnap.exists()){
                 setUser(docSnap.data());
             }
+        const reviewQuery=query(
+          collection(db,"reviews"),
+          where("toUser","==",userId)
+        );
+        const reviewSnapshot=await getDocs(reviewQuery);
+        const reviewList=reviewSnapshot.docs.map(doc=>({
+          id:doc.id,
+          ...doc.data(),
+        }));
+        setReviews(reviewList);            
         };
         fetchUser();
     }, [userId]);
@@ -122,6 +135,22 @@ return (
         {currentUser?.uid!==userId&&(
         <RequestButton toUserId={userId}/>
         )}
+        </div>
+
+        <div className="mx-auto mt-10 max-w-4xl">
+          {currentUser?.uid!==userId&&(<ReviewForm toUserId={userId}/>)}
+
+        <div className="mt-10 space-y-6">
+          <h2 className="text-3xl font-bold text-white">
+            Reviews
+          </h2>
+          {reviews.map(review=>(
+            <ReviewCard key={review.id} review={review}/>
+          ))}
+          {reviews.length===0&&(
+            <p className="text-slate-300">No reviews yet.</p>
+          )}
+        </div>
         </div>
   </div>
 );
