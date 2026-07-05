@@ -25,6 +25,7 @@
 import { useAuth } from "@/context/AuthContext";
 import ReviewCard from "@/components/Reviews/ReviewCard";
 import { useEffect, useState } from "react";
+import ChatButton from "@/components/Chat/ChatButton";
 import { db } from "@/firebase/firebase";
 import { useParams } from "react-router-dom";
 import RequestButton from "@/components/SwapRequest/RequestButton";
@@ -157,7 +158,10 @@ return (
       </div>
       
         {currentUser?.uid!==userId&&(
+        <>
         <RequestButton toUserId={userId}/>
+        <ChatButton toUserId={userId}/>
+        </>
         )}
         </div>
 

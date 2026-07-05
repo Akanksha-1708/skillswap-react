@@ -4,7 +4,7 @@
 // <> </> is react fragment, acts as an invisible box
 //<Navbar/> is a way of calling Navbar component
 
-
+import Chat from "@/pages/Chat/Chat";
 import EditProfile from "./pages/EditProfile/EditProfile";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home/Home";
@@ -71,6 +71,12 @@ function App() {
           element={
             <ProtectedRoute>
               <SentRequests/>
+            </ProtectedRoute>
+          }/>
+
+          <Route path="/chat/:userId" element={
+            <ProtectedRoute>
+              <Chat/>
             </ProtectedRoute>
           }/>
         </Route>
