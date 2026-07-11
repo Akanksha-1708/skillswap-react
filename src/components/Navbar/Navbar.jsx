@@ -9,7 +9,7 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { NavLink } from "react-router-dom";
-
+import NotificationBell from "@/components/Notifications/NotificationBell";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 
@@ -76,6 +76,10 @@ function Navbar() {
                 </NavLink>
               </li>
 
+              <li>
+                <NotificationBell/>
+              </li>
+
               <Button
                 onClick={handleLogout}
                 className="h-12 rounded-xl bg-red-500 px-7 text-base font-semibold hover:bg-red-600"
@@ -140,6 +144,7 @@ function Navbar() {
 
           {currentUser ? (
             <>
+            <li>
               <NavLink
                 to="/dashboard"
                 onClick={() => setIsMenuOpen(false)}
@@ -147,6 +152,11 @@ function Navbar() {
               >
                 Dashboard
               </NavLink>
+              </li>
+
+              <li>
+                <NotificationBell/>
+              </li>
 
               <Button
                 onClick={handleLogout}

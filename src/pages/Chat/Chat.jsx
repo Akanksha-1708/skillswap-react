@@ -12,28 +12,29 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { db } from "@/firebase/firebase";
 import { useAuth } from "@/context/AuthContext";
-import {doc,getDoc,addDoc, collection,getDocs,onSnapshot,orderBy,query,serverTimestamp,updateDoc,where,} from "firebase/firestore";
-
+import {doc,getDoc,addDoc,collection,getDocs,onSnapshot,orderBy,query,serverTimestamp,updateDoc,where,} from "firebase/firestore";
 
 function Chat() {
   const { userId } = useParams();
   const { currentUser } = useAuth();
+
   const [receiver,setReceiver]=useState(null);
-  const [conversationId, setConversationId] = useState(null);
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
+  const [conversationId,setConversationId]=useState(null);
+  const [message,setMessage]=useState("");
+  const [messages,setMessages]=useState([]);
   const [conversations,setConversations]=useState([]);
 
-  const handleSend = async () => {
-    if (!message.trim()) return;
-    if (!conversationId) return;
+  const handleSend=async()=>{
+    if(!message.trim()) return;
+    if(!conversationId) return;
+
     await addDoc(
-      collection(db, "messages"),
+      collection(db,"messages"),
       {
         conversationId,
-        senderId: currentUser.uid,
-        text: message,
-        createdAt: serverTimestamp(),
+        senderId:currentUser.uid,
+        text:message,
+        createdAt:serverTimestamp(),
       }
     );
 
@@ -43,117 +44,149 @@ function Chat() {
         lastMessage:message,
         updatedAt:serverTimestamp(),
       }
-    )
+    );
 
     setMessage("");
-
   };
-  useEffect(() => {
-    const fetchConversation = async () => {
-      const q = query(
-        collection(db, "conversations"),
-        where("participants", "array-contains", userId)
+
+  useEffect(()=>{
+    if(!currentUser) return;
+
+    const fetchConversation=async()=>{
+      const q=query(
+        collection(db,"conversations"),
+        where("participants","array-contains",currentUser.uid)
       );
 
-      const snapshot = await getDocs(q);
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.participants.includes(userId)) {
-          setConversationId(doc.id);
+      const snapshot=await getDocs(q);
+
+      let foundConversation=null;
+
+      snapshot.forEach((conversationDoc)=>{
+        const data=conversationDoc.data();
+
+        if(data.participants.includes(userId)){
+          foundConversation=conversationDoc.id;
         }
       });
-    };
-    fetchConversation();
-  }, [userId]);
 
-  useEffect(() => {
-    if (!conversationId) return;
-    const q = query(
-      collection(db, "messages"),
-      where("conversationId", "==", conversationId),
+      setConversationId(foundConversation);
+    };
+
+    fetchConversation();
+  },[userId,currentUser]);
+
+  useEffect(()=>{
+    if(!conversationId) return;
+
+    const q=query(
+      collection(db,"messages"),
+      where("conversationId","==",conversationId),
       orderBy("createdAt")
     );
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const messageList = snapshot.docs.map((doc) => ({
-        id: doc.id,
+
+    const unsubscribe=onSnapshot(q,(snapshot)=>{
+      const messageList=snapshot.docs.map(doc=>({
+        id:doc.id,
         ...doc.data(),
       }));
+
       setMessages(messageList);
-      console.log(messageList);
     });
-    return () => unsubscribe();
-  }, [conversationId]);
-  console.log("Conversation:", conversationId);
+
+    return()=>unsubscribe();
+  },[conversationId]);
 
   useEffect(()=>{
     const fetchReceiver=async()=>{
       const docRef=doc(db,"users",userId);
       const docSnap=await getDoc(docRef);
+
       if(docSnap.exists()){
         setReceiver(docSnap.data());
       }
     };
+
     fetchReceiver();
   },[userId]);
 
   useEffect(()=>{
-    if(!currentUser)return;
+    if(!currentUser) return;
+
     const q=query(
       collection(db,"conversations"),
       where("participants","array-contains",currentUser.uid)
     );
+
     const unsubscribe=onSnapshot(q,(snapshot)=>{
       const conversationList=snapshot.docs.map(doc=>({
         id:doc.id,
         ...doc.data(),
       }));
+
       setConversations(conversationList);
     });
+
     return()=>unsubscribe();
   },[currentUser]);
 
-  return (
+  return(
     <div className="min-h-screen bg-gradient-to-br from-[#081E4C] via-[#233E88] to-[#475793] p-6">
       <div className="mx-auto flex h-[85vh] max-w-7xl overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl">
+
         <div className="w-80 border-r border-white/10">
           <h2 className="p-6 text-3xl font-bold text-white">
             Chats
           </h2>
+
           <div className="space-y-2 px-4">
             {conversations.map((conversation)=>(
-              <ConversationCard key={conversation.id} conversation={conversation}/>
+              <ConversationCard
+                key={conversation.id}
+                conversation={conversation}
+              />
             ))}
           </div>
         </div>
+
         <div className="flex flex-1 flex-col">
+
           <div className="flex items-center gap-4 border-b border-white/10 p-6">
+
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 text-xl font-bold text-white">
               {receiver?.fullName?.charAt(0).toUpperCase()}
             </div>
+
             <div>
               <h2 className="text-2xl font-bold text-white">
                 {receiver?.fullName}
               </h2>
+
               <p className="text-sm text-green-400">
                 ● Online
               </p>
             </div>
+
           </div>
+
           <div className="flex-1 space-y-4 overflow-y-auto p-6">
-            {messages.map((msg) => (
+            {messages.map((msg)=>(
               <MessageBubble
                 key={msg.id}
                 text={msg.text}
-                mine={msg.senderId === currentUser.uid}
+                mine={msg.senderId===currentUser.uid}
               />
             ))}
           </div>
+
           <MessageInput
             message={message}
             setMessage={setMessage}
             handleSend={handleSend}
           />
+
         </div>
+
       </div>
     </div>
   );
