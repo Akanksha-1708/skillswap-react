@@ -12,15 +12,17 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { db } from "@/firebase/firebase";
 import { useAuth } from "@/context/AuthContext";
-import {addDoc, collection,getDocs,onSnapshot,orderBy,query,serverTimestamp,where,} from "firebase/firestore";
+import {doc,getDoc,addDoc, collection,getDocs,onSnapshot,orderBy,query,serverTimestamp,updateDoc,where,} from "firebase/firestore";
+
 
 function Chat() {
   const { userId } = useParams();
   const { currentUser } = useAuth();
-
+  const [receiver,setReceiver]=useState(null);
   const [conversationId, setConversationId] = useState(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [conversations,setConversations]=useState([]);
 
   const handleSend = async () => {
     if (!message.trim()) return;
@@ -34,6 +36,14 @@ function Chat() {
         createdAt: serverTimestamp(),
       }
     );
+
+    await updateDoc(
+      doc(db,"conversations",conversationId),
+      {
+        lastMessage:message,
+        updatedAt:serverTimestamp(),
+      }
+    )
 
     setMessage("");
 
@@ -74,6 +84,34 @@ function Chat() {
     return () => unsubscribe();
   }, [conversationId]);
   console.log("Conversation:", conversationId);
+
+  useEffect(()=>{
+    const fetchReceiver=async()=>{
+      const docRef=doc(db,"users",userId);
+      const docSnap=await getDoc(docRef);
+      if(docSnap.exists()){
+        setReceiver(docSnap.data());
+      }
+    };
+    fetchReceiver();
+  },[userId]);
+
+  useEffect(()=>{
+    if(!currentUser)return;
+    const q=query(
+      collection(db,"conversations"),
+      where("participants","array-contains",currentUser.uid)
+    );
+    const unsubscribe=onSnapshot(q,(snapshot)=>{
+      const conversationList=snapshot.docs.map(doc=>({
+        id:doc.id,
+        ...doc.data(),
+      }));
+      setConversations(conversationList);
+    });
+    return()=>unsubscribe();
+  },[currentUser]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#081E4C] via-[#233E88] to-[#475793] p-6">
       <div className="mx-auto flex h-[85vh] max-w-7xl overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl">
@@ -82,19 +120,19 @@ function Chat() {
             Chats
           </h2>
           <div className="space-y-2 px-4">
-            <ConversationCard />
-            <ConversationCard />
-            <ConversationCard />
+            {conversations.map((conversation)=>(
+              <ConversationCard key={conversation.id} conversation={conversation}/>
+            ))}
           </div>
         </div>
         <div className="flex flex-1 flex-col">
           <div className="flex items-center gap-4 border-b border-white/10 p-6">
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 text-xl font-bold text-white">
-              R
+              {receiver?.fullName?.charAt(0).toUpperCase()}
             </div>
             <div>
               <h2 className="text-2xl font-bold text-white">
-                Rahul Sharma
+                {receiver?.fullName}
               </h2>
               <p className="text-sm text-green-400">
                 ● Online
