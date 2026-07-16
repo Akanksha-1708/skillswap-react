@@ -31,45 +31,115 @@
 // Delete  -> deleteDoc() (later)
 
 import { useEffect, useState } from "react";
-import { doc, getDoc,updateDoc } from "firebase/firestore";
+import {
+    doc,
+    getDoc,
+    updateDoc,
+    addDoc,
+    collection,
+    serverTimestamp,
+} from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 
-function RequestCard({request,onStatusChange}) {
+function RequestCard({ request, onStatusChange }) {
 
     const [sender, setSender] = useState(null);
-    useEffect(()=>{
-        const fetchSender=async()=>{
-            const docRef=doc(
+
+    useEffect(() => {
+
+        const fetchSender = async () => {
+
+            const docRef = doc(
                 db,
                 "users",
                 request.fromUser
             );
-            const docSnap=await getDoc(docRef);
-            if(docSnap.exists()){
+
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
                 setSender(docSnap.data());
             }
-        };
-        fetchSender();
-    },[request]);
 
-    const updateStatus=async(status)=>{
-        await updateDoc(
-            doc(db,"swapRequests",request.id),
-            {status,}
-        );
-        onStatusChange(request.id);
+        };
+
+        fetchSender();
+
+    }, [request]);
+
+    const updateStatus = async (status) => {
+
+        try {
+
+            if (status === "accepted") {
+
+                console.log(request);
+
+                const workspaceRef = await addDoc(
+                    collection(db, "learningWorkspaces"),
+                    {
+                        requestId: request.id,
+
+                        participants: [
+                            request.fromUser,
+                            request.toUser,
+                        ],
+
+                        senderTeachingSkills: request.senderTeachingSkills,
+                        senderLearningSkills: request.senderLearningSkills,
+
+                        receiverTeachingSkills: request.receiverTeachingSkills,
+                        receiverLearningSkills: request.receiverLearningSkills,
+
+                        status: "active",
+
+                        createdAt: serverTimestamp(),
+                    }
+                );
+
+                console.log("Workspace Created:", workspaceRef.id);
+
+                await updateDoc(
+                    doc(db, "swapRequests", request.id),
+                    {
+                        status: "accepted",
+                        workspaceId: workspaceRef.id,
+                    }
+                );
+
+            } else {
+
+                await updateDoc(
+                    doc(db, "swapRequests", request.id),
+                    {
+                        status,
+                    }
+                );
+
+            }
+
+            onStatusChange(request.id);
+
+        } catch (error) {
+
+            console.error("ERROR:", error);
+
+        }
+
     };
 
-    if(!sender) {
+    // ✅ IMPORTANT: Don't remove this.
+    if (!sender) {
         return (
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6 text-white backdrop-blur-xl">
                 Loading...
             </div>
         );
     }
+
     return (
         <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
-            
+
             <h2 className="text-2xl font-bold text-white">
                 {sender.fullName}
             </h2>
@@ -81,25 +151,30 @@ function RequestCard({request,onStatusChange}) {
             <p className="mt-4 text-blue-400">
                 Teaching:
             </p>
-            
+
             <p className="text-white">
                 {sender.teachingSkills.join(", ")}
             </p>
 
             <div className="mt-8 flex gap-4">
 
-                <button onClick={() => updateStatus("accepted")} className="rounded-xl bg-green-500 px-6 py-3 text-white">
+                <button
+                    onClick={() => updateStatus("accepted")}
+                    className="rounded-xl bg-green-500 px-6 py-3 text-white"
+                >
                     Accept
                 </button>
 
-                <button onClick={() => updateStatus("rejected")} className="rounded-xl bg-red-500 px-6 py-3 text-white">
+                <button
+                    onClick={() => updateStatus("rejected")}
+                    className="rounded-xl bg-red-500 px-6 py-3 text-white"
+                >
                     Reject
                 </button>
 
             </div>
 
         </div>
-
     );
 }
 

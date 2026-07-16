@@ -159,7 +159,7 @@ return (
       
         {currentUser?.uid!==userId&&(
         <>
-        <RequestButton toUserId={userId}/>
+        <RequestButton receiver={user}/>
         <ChatButton toUserId={userId}/>
         </>
         )}
