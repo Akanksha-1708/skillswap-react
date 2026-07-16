@@ -18,6 +18,7 @@ import BrowseSkills from "./pages/BrowseSkills/BrowseSkills";
 import PublicProfile from "./pages/PublicProfile/PublicProfile";
 import Requests from "@/pages/Requests/Requests";
 import SentRequests from "@/pages/SentRequests/SentRequests";
+import LearningWorkspace from "@/pages/LearningWorkspace/LearningWorkspace";
 function App() {
   return (
     <BrowserRouter>
@@ -77,6 +78,13 @@ function App() {
           <Route path="/chat/:userId" element={
             <ProtectedRoute>
               <Chat/>
+            </ProtectedRoute>
+          }/>
+
+          <Route path="/workspace/:workspaceId"
+          element={
+            <ProtectedRoute>
+              <LearningWorkspace/>
             </ProtectedRoute>
           }/>
         </Route>

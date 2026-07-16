@@ -22,10 +22,11 @@
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
+import { useNavigate } from "react-router-dom";
 
 function SentRequestCard({ request }) {
-
   const [receiver, setReceiver] = useState(null);
+  const navigate=useNavigate();
 
   useEffect(() => {
 
@@ -76,17 +77,26 @@ function SentRequestCard({ request }) {
         {receiver.teachingSkills.join(", ")}
       </p>
 
+      <div className="mt-8 flex items-center gap-4">
       <div
-        className={`mt-8 inline-block rounded-full px-5 py-2 font-semibold text-white
+        className={`inline-block rounded-full px-5 py-2 font-semibold text-white
         ${
           request.status === "pending"
             ? "bg-yellow-500"
             : request.status === "accepted"
             ? "bg-green-500"
             : "bg-red-500"
-        }`}
-      >
+        }`}>
         {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+      </div>
+
+      {request.status==="accepted" && request.workspaceId &&(
+        <button
+        onClick={()=>navigate(`/workspace/${request.workspaceId}`)}
+        className="rounded-xl bg-blue-500 px-5 py-2 font-semifold text-white transition hover:bg-blue-500">
+          Open Workspace
+        </button>
+      )}
       </div>
 
     </div>

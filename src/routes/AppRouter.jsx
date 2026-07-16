@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import MainLayout from "@/layouts/MainLayout";
-
+import LearningWorkspace from "@/pages/LearningWorkspace/LearningWorkspace";
 import Home from "@/pages/Home/Home";
 import Login from "@/pages/Login/Login";
 import Signup from "@/pages/Signup/Signup";
@@ -17,25 +17,21 @@ function AppRouter() {
 
           <Route
             path="/"
-            element={<Home />}
-          />
+            element={<Home />}/>
 
           <Route
             path="/login"
-            element={<Login />}
-          />
+            element={<Login />}/>
 
           <Route
             path="/signup"
-            element={<Signup />}
-          />
+            element={<Signup />}/>
 
         </Route>
 
         <Route
           path="*"
-          element={<NotFound />}
-        />
+          element={<NotFound />}/>
 
       </Routes>
 
