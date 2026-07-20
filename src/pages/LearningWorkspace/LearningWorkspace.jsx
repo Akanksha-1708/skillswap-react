@@ -4,6 +4,7 @@ import { db } from "@/firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import SharedNotes from "@/components/LearningWorkspace/SharedNotes";
 import SharedResources from "@/components/LearningWorkspace/SharedResources";
+import TaskBoard from "@/components/LearningWorkspace/TaskBoard";
 
 function LearningWorkspace() {
     const { workspaceId } = useParams();
@@ -112,6 +113,7 @@ function LearningWorkspace() {
 
                 <SharedNotes workspaceId={workspace.id}/>
                 <SharedResources workspaceId={workspace.id}/>
+                <TaskBoard workspaceId={workspace.id}/>
             </div>
         </div>
     );
