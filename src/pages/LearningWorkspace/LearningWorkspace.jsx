@@ -5,6 +5,9 @@ import { doc, getDoc } from "firebase/firestore";
 import SharedNotes from "@/components/LearningWorkspace/SharedNotes";
 import SharedResources from "@/components/LearningWorkspace/SharedResources";
 import TaskBoard from "@/components/LearningWorkspace/TaskBoard";
+import SessionPlanner from "@/components/LearningWorkspace/SessionPlanner";
+import ProgressTracker from "@/components/LearningWorkspace/ProgressTracker";
+import WorkspaceStats from "@/components/LearningWorkspace/WorkspaceStats";
 
 function LearningWorkspace() {
     const { workspaceId } = useParams();
@@ -114,6 +117,9 @@ function LearningWorkspace() {
                 <SharedNotes workspaceId={workspace.id}/>
                 <SharedResources workspaceId={workspace.id}/>
                 <TaskBoard workspaceId={workspace.id}/>
+                <SessionPlanner workspaceId={workspace.id}/>
+                <ProgressTracker workspaceId={workspace.id} />
+                <WorkspaceStats workspaceId={workspace.id} />
             </div>
         </div>
     );
