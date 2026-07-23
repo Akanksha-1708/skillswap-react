@@ -5,7 +5,6 @@
 // The key helps React identify each item efficiently
 // button aschild=> The Button component doesn't render a <button> anymore. Instead, it styles the NavLink to look like a button.
 
-
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -29,7 +28,6 @@ function Navbar() {
 
   const navLinks = [
     { name: "Home", path: "/" },
-    { name: "How It Works", path: "/#how-it-works" },
     { name: "Skills", path: "/skills" },
   ];
 
@@ -70,14 +68,31 @@ function Navbar() {
               <li>
                 <NavLink
                   to="/dashboard"
-                  className="text-white transition duration-300 hover:text-blue-400"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-blue-400 transition duration-300"
+                      : "text-white transition duration-300 hover:text-blue-400"
+                  }
                 >
                   Dashboard
                 </NavLink>
               </li>
 
               <li>
-                <NotificationBell/>
+                <NavLink
+                  to="/my-workspaces"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-blue-400 transition duration-300"
+                      : "text-white transition duration-300 hover:text-blue-400"
+                  }
+                >
+                  My Workspaces
+                </NavLink>
+              </li>
+
+              <li>
+                <NotificationBell />
               </li>
 
               <Button
@@ -144,19 +159,31 @@ function Navbar() {
 
           {currentUser ? (
             <>
-            <li>
               <NavLink
                 to="/dashboard"
                 onClick={() => setIsMenuOpen(false)}
-                className="block text-white hover:text-blue-400"
+                className={({ isActive }) =>
+                  isActive
+                    ? "block text-blue-400"
+                    : "block text-white hover:text-blue-400"
+                }
               >
                 Dashboard
               </NavLink>
-              </li>
 
-              <li>
-                <NotificationBell/>
-              </li>
+              <NavLink
+                to="/my-workspaces"
+                onClick={() => setIsMenuOpen(false)}
+                className={({ isActive }) =>
+                  isActive
+                    ? "block text-blue-400"
+                    : "block text-white hover:text-blue-400"
+                }
+              >
+                My Workspaces
+              </NavLink>
+
+              <NotificationBell />
 
               <Button
                 onClick={handleLogout}

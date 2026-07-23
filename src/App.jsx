@@ -17,6 +17,7 @@ import ProfileSetup from "./pages/ProfileSetup/ProfileSetup";
 import BrowseSkills from "./pages/BrowseSkills/BrowseSkills";
 import PublicProfile from "./pages/PublicProfile/PublicProfile";
 import Requests from "@/pages/Requests/Requests";
+import MyWorkspaces from "./pages/MyWorkspaces/MyWorkspaces";
 import SentRequests from "@/pages/SentRequests/SentRequests";
 import LearningWorkspace from "@/pages/LearningWorkspace/LearningWorkspace";
 function App() {
@@ -88,6 +89,15 @@ function App() {
             </ProtectedRoute>
           }/>
         </Route>
+
+        <Route
+        path="/my-workspaces"
+        element={
+        <ProtectedRoute>
+        <MyWorkspaces />
+        </ProtectedRoute>
+        }
+        />
 
       </Routes>
     </BrowserRouter>
