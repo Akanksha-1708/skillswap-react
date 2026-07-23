@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { db } from "@/firebase/firebase";
-
+import { addActivity } from "@/utils/activityLogger";
+import { useAuth } from "@/context/AuthContext";
 import {
     collection,
     addDoc,
@@ -11,7 +12,7 @@ import {
 } from "firebase/firestore";
 
 function SessionPlanner({ workspaceId }) {
-
+    const { currentUser, userProfile } = useAuth();
     const [topic, setTopic] = useState("");
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
@@ -45,6 +46,13 @@ function SessionPlanner({ workspaceId }) {
                 createdAt: serverTimestamp(),
             }
         );
+        await addActivity({
+            workspaceId,
+            userId:currentUser.uid,
+            userName:userProfile?.fullName||"Unknown User",
+            type:"session",
+            message:`scheduled a session on "${topic}"`,
+        });
         setTopic("");
         setDate("");
         setTime("");

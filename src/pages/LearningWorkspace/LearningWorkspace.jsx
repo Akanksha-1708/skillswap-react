@@ -8,6 +8,7 @@ import TaskBoard from "@/components/LearningWorkspace/TaskBoard";
 import SessionPlanner from "@/components/LearningWorkspace/SessionPlanner";
 import ProgressTracker from "@/components/LearningWorkspace/ProgressTracker";
 import WorkspaceStats from "@/components/LearningWorkspace/WorkspaceStats";
+import ActivityFeed from "@/components/LearningWorkspace/ActivityFeed";
 
 function LearningWorkspace() {
     const { workspaceId } = useParams();
@@ -114,6 +115,7 @@ function LearningWorkspace() {
                     </span>
                 </div>
 
+                <ActivityFeed workspaceId={workspace.id}/>
                 <SharedNotes workspaceId={workspace.id}/>
                 <SharedResources workspaceId={workspace.id}/>
                 <TaskBoard workspaceId={workspace.id}/>

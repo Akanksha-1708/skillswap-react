@@ -9,12 +9,15 @@ import {
     serverTimestamp,
     onSnapshot,
 } from "firebase/firestore";
+import { addActivity } from "@/utils/activityLogger";
+import { useAuth } from "@/context/AuthContext";
 
 function SharedResources({ workspaceId }) {
 
     const [title, setTitle] = useState("");
     const [link, setLink] = useState("");
     const [resources, setResources] = useState([]);
+    const { currentUser, userProfile } = useAuth();
 
     useEffect(() => {
         const q = query(
@@ -44,6 +47,13 @@ function SharedResources({ workspaceId }) {
                 createdAt: serverTimestamp(),
             }
         );
+        await addActivity({
+            workspaceId,
+            userId:currentUser.uid,
+            userName:userProfile.fullName||"Unknown User",
+            type:"resource",
+            message:"added a new resource",
+        });
         setTitle("");
         setLink("");
     };

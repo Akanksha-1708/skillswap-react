@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { db } from "@/firebase/firebase";
-
+import { addActivity } from "@/utils/activityLogger";
 import {
     collection,
     addDoc,
@@ -11,11 +11,13 @@ import {
     doc,
     onSnapshot,
 } from "firebase/firestore";
+import { useAuth } from "@/context/AuthContext";
 
 function SharedNotes({ workspaceId }) {
-
+    
     const [notes, setNotes] = useState("");
     const [noteId, setNoteId] = useState(null);
+    const { currentUser, userProfile } = useAuth();
 
 useEffect(() => {
     const q = query(
@@ -32,28 +34,42 @@ useEffect(() => {
     return () => unsubscribe();
 }, [workspaceId]);
 
-    const saveNotes = async () => {
-        if (noteId) {
-            await updateDoc(
-                doc(db, "workspaceNotes", noteId),
-                {
-                    text: notes,
-                    updatedAt: serverTimestamp(),
-                }
-            );
-        } else {
-            await addDoc(
-                collection(db, "workspaceNotes"),
-                {
-                    workspaceId,
-                    text: notes,
-                    updatedAt: serverTimestamp(),
-                }
-            );
-        }
-        alert("Notes Saved!");
-    };
+const saveNotes = async () => {
 
+    if (noteId) {
+        await updateDoc(
+            doc(db, "workspaceNotes", noteId),
+            {
+                text: notes,
+                updatedAt: serverTimestamp(),
+            }
+        );
+        await addActivity({
+            workspaceId,
+            userId: currentUser.uid,
+            userName: userProfile?.fullName || "Unknown User",
+            type: "note",
+            message: "updated shared notes",
+        });
+    } else {
+        await addDoc(
+            collection(db, "workspaceNotes"),
+            {
+                workspaceId,
+                text: notes,
+                updatedAt: serverTimestamp(),
+            }
+        );
+        await addActivity({
+            workspaceId,
+            userId: currentUser.uid,
+            userName: userProfile?.fullName || "Unknown User",
+            type: "note",
+            message: "created shared notes",
+        });
+    }
+    alert("Notes Saved!");
+};
     return (
         <div className="mt-10 rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
             <h2 className="text-3xl font-bold text-white">

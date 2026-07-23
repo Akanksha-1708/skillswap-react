@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { db } from "@/firebase/firebase";
-
+import { addActivity } from "@/utils/activityLogger";
+import { useAuth } from "@/context/AuthContext";
 import {
     collection,
     addDoc,
@@ -14,7 +15,7 @@ import {
 } from "firebase/firestore";
 
 function TaskBoard({ workspaceId }) {
-
+    const { currentUser, userProfile } = useAuth();
     const [task, setTask] = useState("");
     const [tasks, setTasks] = useState([]);
 
@@ -48,6 +49,14 @@ function TaskBoard({ workspaceId }) {
                 createdAt: serverTimestamp(),
             }
         );
+
+        await addActivity({
+            workspaceId,
+            userId:currentUser.uid,
+            userName:userProfile?.fullName||"Unknown User",
+            type:"task",
+            message:`added task "${task}"`,
+        });
         setTask("");
     };
 
@@ -56,6 +65,13 @@ function TaskBoard({ workspaceId }) {
             doc(db,"workspaceTasks",taskId),
             {completed:!completed,}
         );
+        await addActivity({
+            workspaceId,
+            userId:currentUser.uid,
+            userName:userProfile?.fullName||"Unknown User",
+            type:"task",
+            message:completed?"marked a task as pending":"completed a task",
+        })
     };
 
     const deleteTask=async(taskId)=>{
@@ -66,6 +82,13 @@ function TaskBoard({ workspaceId }) {
         await deleteDoc(
             doc(db,"workspaceTasks",taskId)
         );
+        await addActivity({
+            workspaceId,
+            userId:currentUser.uid,
+            userName:userProfile?.fullName||"Unknown User",
+            type:"task",
+            message:"deleted a task",
+        });
     };
 
     return (
